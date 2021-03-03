@@ -1,13 +1,17 @@
 package utils
 
-import java.io.{BufferedWriter, FileWriter}
+import org.apache.poi.ss.usermodel.{DataFormatter, Row, WorkbookFactory}
+
+import java.io.{BufferedWriter, File, FileWriter}
+import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
-import org.apache.poi.ss.usermodel.{ DataFormatter, WorkbookFactory, Row }
-import java.io.File
-import collection.JavaConversions._
 
-
+/**
+ * Given an xlsx spreadsheet where the first two columns represent projectCode and projectName,
+ * wraps the project code in a regex and outputs a file in the format regexPattern|delimiter|projectName
+ * for use as rule definition file by SparkNLP RegexMatcher
+ */
 object XLSXRegexGenerator {
 
   def main(args: Array[String]): Unit = {
@@ -31,6 +35,11 @@ object XLSXRegexGenerator {
     }
   }
 
+  /**
+   * @param regexList List of strings in the form regexPattern<"delimiter">projectName
+   * @param outputFilePath   Path of the written file
+   * @return Try indicating whether or not creation of the regex file was successful
+   */
   def writeFile(regexList: List[String], outputFilePath: String): Try[Unit] = {
     Try {
       val file = new File(outputFilePath)
@@ -41,14 +50,19 @@ object XLSXRegexGenerator {
     }
   }
 
+  /**
+   * @param sourceFilepath  Location of source xlsx spreadsheet
+   * @param outputDelimiter Defines the delimiter used in the SparkNLP RegexMatcher (set in .setRules method)
+   * @param regexFn         Function that wraps a projectCode in a regex
+   * @return List of lines in the format regexPattern|delimiter|projectName
+   */
   private def createRegexList(sourceFilepath: String,
                               outputDelimiter: String,
                               regexFn: String => String): Try[List[String]] = {
 
-    val lines = getLinesFromFile(sourceFilepath)
+    val lines = getTupleList(sourceFilepath)
 
     val regexLineTrys = lines.map(line => {
-
       Try {
         val (projectCode, projectName) = (line._1, line._2)
         val projectRegex = regexFn(projectCode)
@@ -71,7 +85,12 @@ object XLSXRegexGenerator {
     }
   }
 
-  private def getLinesFromFile(sourceFilepath: String): List[(String, String)] = {
+  /**
+   *
+   * @param sourceFilepath Path of xlsx spreadsheet
+   * @return List of tuples containing the contents of the first two cells of each row of the spreadsheet at sourceFilePath
+   */
+  private def getTupleList(sourceFilepath: String): List[(String, String)] = {
 
     val buffer = new ListBuffer[(String, String)]
     val sheet = WorkbookFactory
@@ -81,11 +100,11 @@ object XLSXRegexGenerator {
     for (row <- sheet) {
       val projectCodeAndName =
         for {
-        a <- Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
-        b <- Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
-      } yield {
-        (formatter.formatCellValue(a), formatter.formatCellValue(b))
-      }
+          a <- Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
+          b <- Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
+        } yield {
+          (formatter.formatCellValue(a), formatter.formatCellValue(b))
+        }
       projectCodeAndName.foreach(item => buffer += item)
     }
     buffer.tail.result()

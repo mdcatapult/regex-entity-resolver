@@ -2,4 +2,3 @@ target/*
 .idea/*
 .bsp/*
 project/*
-src/test/resources/regex.txt
