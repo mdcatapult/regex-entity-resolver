@@ -1,10 +1,10 @@
-package utils
+package io.mdcatapult.resolver.webservice
 
 import com.johnsnowlabs.nlp.annotators.RegexMatcher
-import com.johnsnowlabs.nlp.{DocumentAssembler, Finisher, SparkNLP}
-import model.{Element, Project}
+import com.johnsnowlabs.nlp.{DocumentAssembler, SparkNLP}
+import io.mdcatapult.resolver.webservice.model.{Element, Project}
 import org.apache.spark.ml.Pipeline
-import org.apache.spark.sql.functions.{arrays_zip, explode}
+import spray.json.enrichAny
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -31,32 +31,24 @@ object ProjectCodeResolver {
       .setStrategy("MATCH_ALL")
       .setRules("src/test/resources/regex.txt", "=")
 
-//    val finisher = new Finisher()
-//      .setInputCols("regex")
-//      .setIncludeMetadata(true)
-
     val regexPipeline = new Pipeline()
       .setStages(
         Array(documentAssembler, regexTokenizer)
       )
 
-    val docsWithRegexMatchDf =
-      regexPipeline
-        .fit(dataframe)
-        .transform(dataframe)
-//        .withColumn("result", explode(arrays_zip($"regex")))
-//        .select( "result")
 
-//    docsWithRegexMatchDf.show(false)
-
-      docsWithRegexMatchDf.select("regex")
+    regexPipeline
+      .fit(dataframe)
+      .transform(dataframe)
+      .select("regex")
       .as[Array[Element]]
-      .foreach(elements => {
-        val ab = ArrayBuffer[Project]()
-        elements.foreach(element => {
-          ab += Project(element.result, element.metaData("identifier"))
+      .foreach(elementArray => {
+        val projects = ArrayBuffer[Project]()
+        elementArray.foreach(element => {
+          projects += Project(element.result, element.metaData("identifier"))
         })
-        print(ab)
+        print(projects.toArray.toJson)
+        projects.toArray.toJson
       })
   }
 }

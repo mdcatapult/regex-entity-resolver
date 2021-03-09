@@ -1,4 +1,4 @@
-package utils
+package io.mdcatapult.resolver.webservice.utils
 
 import org.apache.poi.ss.usermodel.{DataFormatter, Row, WorkbookFactory}
 

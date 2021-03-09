@@ -10,6 +10,7 @@ libraryDependencies ++= {
     "org.apache.spark" %% "spark-mllib" % sparkVer,
     "com.johnsnowlabs.nlp" %% "spark-nlp" % sparkNLP,
     "org.apache.poi" % "poi" % "5.0.0",
-    "org.apache.poi" % "poi-ooxml" % "5.0.0"
+    "org.apache.poi" % "poi-ooxml" % "5.0.0",
+    "io.spray" %% "spray-json" % "1.3.5",
   )
 }
