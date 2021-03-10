@@ -35,7 +35,6 @@ lazy val root = (project in file("."))
       val configVersion = "1.4.0"
       val akkaVersion = "2.6.4"
       val akkaHttpVersion = "10.2.0"
-      val leadminerVersion = "0.2.20"
 
       Seq(
         "com.github.pathikrit" %% "better-files" % "3.9.1",
@@ -52,7 +51,6 @@ lazy val root = (project in file("."))
         "io.spray" %% "spray-json" % "1.3.5",
         "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
         "com.typesafe" % "config" % configVersion,
-        "io.mdcatapult.klein" %% "leadminer" % leadminerVersion,
         "io.mdcatapult.klein" % "util_2.13" % "1.2.0",
         "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion,
         "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion,
