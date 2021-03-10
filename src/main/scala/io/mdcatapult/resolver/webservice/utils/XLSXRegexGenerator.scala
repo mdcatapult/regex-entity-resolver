@@ -1,9 +1,8 @@
 package io.mdcatapult.resolver.webservice.utils
 
 import org.apache.poi.ss.usermodel.{DataFormatter, Row, WorkbookFactory}
-
+import scala.jdk.CollectionConverters._
 import java.io.{BufferedWriter, File, FileWriter}
-import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 import scala.util.{Failure, Success, Try}
 
@@ -25,7 +24,7 @@ object XLSXRegexGenerator {
     val regexGeneratorProcess = for {
       projectRegexList <- createRegexList(sourceFilePath, outputDelimiter, regexify)
       _ = writeFile(projectRegexList, outputFilePath)
-    } yield Unit
+    } yield()
 
     regexGeneratorProcess match {
       case Success(_) => println("MDC project codes file created successfully")
@@ -97,7 +96,7 @@ object XLSXRegexGenerator {
       .create(new File(sourceFilepath))
       .getSheetAt(0)
     val formatter = new DataFormatter()
-    for (row <- sheet) {
+    for (row <- sheet.asScala) {
       val projectCodeAndName =
         for {
           a <- Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
