@@ -1,4 +1,4 @@
-package io.mdcatapult.resolver.webservice
+package io.mdcatapult.resolver.webservice.utils
 
 import com.johnsnowlabs.nlp.annotators.RegexMatcher
 import com.johnsnowlabs.nlp.{DocumentAssembler, SparkNLP}
@@ -29,7 +29,7 @@ object ProjectCodeResolver {
       .setInputCols("document")
       .setOutputCol("regex")
       .setStrategy("MATCH_ALL")
-      .setRules("src/test/resources/regex.txt", "=")
+      .setRules("src/main/resources/regex.txt", "=")
 
     val regexPipeline = new Pipeline()
       .setStages(

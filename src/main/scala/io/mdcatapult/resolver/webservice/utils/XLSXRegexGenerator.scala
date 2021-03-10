@@ -16,7 +16,7 @@ object XLSXRegexGenerator {
 
   def main(args: Array[String]): Unit = {
     val sourceFilePath = "src/main/resources/informatics_projects.xlsx"
-    val outputFilePath = "src/test/resources/regex.txt"
+    val outputFilePath = "src/main/resources/regex.txt"
 
     val outputDelimiter = "="
 
