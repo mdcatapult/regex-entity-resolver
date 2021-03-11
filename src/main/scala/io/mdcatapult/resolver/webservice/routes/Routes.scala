@@ -1,7 +1,6 @@
 package io.mdcatapult.resolver.webservice.routes
 
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCodes}
-import akka.http.scaladsl.model.Uri.Path.Segment
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
@@ -15,7 +14,7 @@ class Routes(implicit e: ExecutionContextExecutor, m: Materializer) extends Lazy
 
   val topLevelRoute: Route =
     concat(
-      path("project" / Segment)(stringRoute)
+      pathPrefix("project" / Segment)(stringRoute)
     )
 
   def stringRoute(projectCode: String): Route = get {
