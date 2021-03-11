@@ -19,7 +19,7 @@ object ProjectCodeResolver {
       val parts = line.split("=")
       val code = parts(0)
       val name = parts(1)
-      name -> code
+      code -> name
     }).toMap
   }
 
