@@ -1,11 +1,19 @@
 package io.mdcatapult.resolver.webservice.utils
 
 import io.mdcatapult.resolver.webservice.model.Project
+import org.apache.poi.ss.usermodel.{DataFormatter, Row, WorkbookFactory}
+
+import java.io.File
 import scala.io.Source
+import scala.jdk.CollectionConverters.IterableHasAsScala
+import scala.util.matching.Regex
+
 
 object ProjectCodeResolver {
 
-  val projectCodeMap: Map[String, String] = createProjectCodeMapFromTextFile("src/test/resources/codes.txt")
+  //  val projectCodeMap: Map[String, String] = createProjectCodeMapFromTextFile("src/test/resources/codes.txt")
+  val projectCodeMap: Map[String, String] = createProjectCodeMapFromXLSxFile("src/main/resources/informatics_projects.xlsx")
+
 
   /**
    *
@@ -26,7 +34,26 @@ object ProjectCodeResolver {
     }).toMap
   }
 
-  val mdcProjectRegex = "\\bMDCP-\\d{4}\\b".r
+  /**
+   *
+   * @param filepath Path to xlsx file where the first two columns are projectCode and projectName
+   * @return Map with projectCode|projectName key value pairs
+   */
+  private def createProjectCodeMapFromXLSxFile(filepath: String): Map[String, String] = {
+    val sheet = WorkbookFactory.create(new File(filepath))
+      .getSheetAt(0)
+    val formatter = new DataFormatter()
+
+    sheet.asScala.collect { row =>
+      val code = Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
+      val name = Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
+      (code, name) match {
+        case (Some(code), Some(name)) => formatter.formatCellValue(code) -> formatter.formatCellValue(name)
+      }
+    }.toMap
+  }
+
+  val mdcProjectRegex: Regex = "\\bMDCP-\\d{4}\\b".r
 
   /**
    * Given a string, identifies MDC project codes and resolves them to project name
