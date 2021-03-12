@@ -23,21 +23,31 @@ class Routes(implicit e: ExecutionContextExecutor, m: Materializer) extends Lazy
     )
 
   def stringRoute(projectCode: String): Route = get {
-    val resolverResult = ProjectCodeResolver.resolve(projectCode).toJson.toString
-    logger.info(s" Success: HTTP Response for $projectCode")
-    complete(HttpResponse(StatusCodes.OK, entity = HttpEntity(ContentTypes.`application/json`, resolverResult)))
+    val resolverResult = Try {
+      ProjectCodeResolver.resolve(projectCode).toJson.toString
+    }
+    complete {
+      resolverResult match {
+        case Success(result) =>
+          logger.info(s" Success: HTTP Response for $projectCode")
+          HttpResponse(StatusCodes.OK, entity = HttpEntity(ContentTypes.`application/json`, result))
+        case Failure(e) =>
+          logger.error("Failed exception", e)
+          HttpResponse(StatusCodes.InternalServerError, entity = HttpEntity(ContentTypes.`application/json`, e.getMessage))
+      }
+    }
   }
 
   def bodyRoute: Route = {
     (post & entity(as[HttpEntity])) { httpEntity =>
       complete {
         Unmarshal(httpEntity).to[String].map(body => {
-          val jsonResult = Try {
+          val resolverResult = Try {
             ProjectCodeResolver.resolve(body).toJson.toString
           }
-          jsonResult match {
-            case Success(jsonResultsAsString) =>
-              HttpResponse(StatusCodes.OK, entity = HttpEntity(ContentTypes.`application/json`, jsonResultsAsString))
+          resolverResult match {
+            case Success(result) =>
+              HttpResponse(StatusCodes.OK, entity = HttpEntity(ContentTypes.`application/json`, result))
             case Failure(e) =>
               logger.error("Failed exception", e)
               HttpResponse(StatusCodes.InternalServerError, entity = HttpEntity(ContentTypes.`application/json`, e.getMessage))
