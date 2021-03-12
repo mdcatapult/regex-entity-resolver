@@ -19,7 +19,7 @@ class Routes(implicit e: ExecutionContextExecutor, m: Materializer) extends Lazy
   val topLevelRoute: Route =
     concat(
       path("projects")(bodyRoute),
-      pathPrefix("project" / Segment)(stringRoute)
+      pathPrefix("projects" / Segment)(stringRoute)
     )
 
   def stringRoute(projectCode: String): Route = get {
