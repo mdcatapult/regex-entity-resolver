@@ -7,11 +7,10 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class ProjectResolverSpec extends AnyWordSpec with Matchers {
 
-  val exampleCode = "Some text. MDCP-0167. Some other stuff."
-  val exampleNonCode = "Some text. MDCP-01678. Some other stuff."
-  val exampleInexistentCode = "Some text. MDCP-9999. Some other stuff."
-  val exampleMultipleCodes = "Some text. MDCP-0167. Some other stuff. MDCP-0159."
-
+  private val exampleCode = "Some text. MDCP-0167. Some other stuff."
+  private val exampleMultipleCodes = "Some text. MDCP-0167. Some other stuff. MDCP-0159."
+  private val exampleInexistentCode = "Some text. MDCP-9999. Some other stuff."
+  private val exampleInvalidCode = "Some text. MDCP-01678. Some other stuff."
 
   "The projectResolver" should {
     "resolve a single project code" in {
@@ -27,7 +26,7 @@ class ProjectResolverSpec extends AnyWordSpec with Matchers {
     }
 
     "not resolve a code which is not in the correct format" in {
-      assert(ProjectCodeResolver.resolve(exampleNonCode).length === 0)
+      assert(ProjectCodeResolver.resolve(exampleInvalidCode).length === 0)
     }
 
   }

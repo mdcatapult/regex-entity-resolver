@@ -12,7 +12,7 @@ import scala.util.matching.Regex
 object ProjectCodeResolver {
 
   //  val projectCodeMap: Map[String, String] = createProjectCodeMapFromTextFile("src/test/resources/codes.txt")
-  val projectCodeMap: Map[String, String] = createProjectCodeMapFromXLSxFile("src/main/resources/informatics_projects.xlsx")
+  val projectCodeMap: Map[String, String] = createProjectCodeMapFromXLSXFile("src/main/resources/informatics_projects.xlsx")
 
 
   /**
@@ -39,7 +39,7 @@ object ProjectCodeResolver {
    * @param filepath Path to xlsx file where the first two columns are projectCode and projectName
    * @return Map with projectCode|projectName key value pairs
    */
-  private def createProjectCodeMapFromXLSxFile(filepath: String): Map[String, String] = {
+  private def createProjectCodeMapFromXLSXFile(filepath: String): Map[String, String] = {
     val sheet = WorkbookFactory.create(new File(filepath))
       .getSheetAt(0)
     val formatter = new DataFormatter()
