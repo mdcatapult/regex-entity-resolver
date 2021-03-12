@@ -41,10 +41,11 @@ object ProjectCodeResolver {
    */
   private def createProjectCodeMapFromXLSXFile(filepath: String): Map[String, String] = {
     val sheet = WorkbookFactory.create(new File(filepath))
-      .getSheetAt(0)
+    val tab = sheet.getSheetAt(0)
+    sheet.close()
     val formatter = new DataFormatter()
 
-    sheet.asScala.collect { row =>
+    tab.asScala.collect { row =>
       val code = Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
       val name = Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
       (code, name) match {
