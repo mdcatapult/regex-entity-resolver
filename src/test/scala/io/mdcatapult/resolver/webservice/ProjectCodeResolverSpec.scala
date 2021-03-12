@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 
-class ProjectResolverSpec extends AnyWordSpec with Matchers {
+class ProjectCodeResolverSpec extends AnyWordSpec with Matchers {
 
   private val exampleCode = "Some text. MDCP-0167. Some other stuff."
   private val exampleMultipleCodes = "Some text. MDCP-0167. Some other stuff. MDCP-0159."

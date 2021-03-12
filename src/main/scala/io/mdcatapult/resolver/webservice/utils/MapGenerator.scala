@@ -12,6 +12,15 @@ import scala.jdk.CollectionConverters.IterableHasAsScala
 object MapGenerator {
 
 
+  def createProjectCodeMapHandler(filepath: String): Map[String, String] = {
+    val fileType = filepath.split("\\.").last
+    println(fileType)
+    fileType match {
+      case "xlsx" => createProjectCodeMapFromXLSXFile(filepath)
+      case "txt" => createProjectCodeMapFromTextFile(filepath)
+    }
+  }
+
   /**
    *
    * @param filepath Path to text file in the format code|=|name
@@ -48,7 +57,7 @@ object MapGenerator {
       (code, name) match {
         case (Some(code), Some(name)) => formatter.formatCellValue(code) -> formatter.formatCellValue(name)
       }
-    }.toMap
+    }.tail.toMap
   }
 
 }
