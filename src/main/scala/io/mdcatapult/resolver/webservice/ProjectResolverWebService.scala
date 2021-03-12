@@ -3,7 +3,6 @@ package io.mdcatapult.resolver.webservice
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 
-import scala.concurrent.ExecutionContextExecutor
 import com.typesafe.scalalogging.LazyLogging
 import io.mdcatapult.resolver.webservice.routes.Routes
 import io.mdcatapult.resolver.webservice.utils.ConfigLoader

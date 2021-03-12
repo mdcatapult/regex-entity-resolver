@@ -17,5 +17,11 @@ object ConfigLoader {
   }
 }
 
-final case class AppConfig(name: String, host: String, port: Int)
+final case class AppConfig(
+                            name: String,
+                            host: String,
+                            port: Int,
+                            sourceFilePath: String,
+                            regex: String
+                          )
 final case class WebServiceConfig(appConfig: AppConfig)

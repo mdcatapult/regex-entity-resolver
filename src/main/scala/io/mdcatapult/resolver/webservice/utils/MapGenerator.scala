@@ -14,7 +14,6 @@ object MapGenerator {
 
   def createProjectCodeMapHandler(filepath: String): Map[String, String] = {
     val fileType = filepath.split("\\.").last
-    println(fileType)
     fileType match {
       case "xlsx" => createProjectCodeMapFromXLSXFile(filepath)
       case "txt" => createProjectCodeMapFromTextFile(filepath)
@@ -29,7 +28,7 @@ object MapGenerator {
   def createProjectCodeMapFromTextFile(filepath: String): Map[String, String] = {
 
     val source = Source.fromFile(filepath)
-    val lines = source.getLines.toList
+    val lines = source.getLines().toList
     source.close()
 
     lines.map(line => {

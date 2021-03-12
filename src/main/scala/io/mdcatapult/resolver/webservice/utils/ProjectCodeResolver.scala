@@ -6,10 +6,9 @@ import scala.util.matching.Regex
 
 object ProjectCodeResolver {
 
-  //  val projectCodeMap: Map[String, String] = createProjectCodeMapFromTextFile("src/test/resources/codes.txt")
-  val projectCodeMap: Map[String, String] = MapGenerator.createProjectCodeMapFromXLSXFile("src/main/resources/informatics_projects.xlsx")
-
-  val mdcProjectRegex: Regex = "\\bMDCP-\\d{4}\\b".r
+  val config = ConfigLoader.loadConfig()
+  val projectCodeMap: Map[String, String] = MapGenerator.createProjectCodeMapHandler(config.sourceFilePath)
+  val mdcProjectRegex: Regex = config.regex.r
 
   /**
    * Given a string, identifies MDC project codes and resolves them to project name
@@ -18,7 +17,6 @@ object ProjectCodeResolver {
    * @return List of maps with keys of 'code' and 'name'
    */
   def resolve(text: String): List[Project] = {
-
     // find codes in the correct format
     val matches: List[String] = mdcProjectRegex.findAllIn(text).toList
     // lookup names from codes

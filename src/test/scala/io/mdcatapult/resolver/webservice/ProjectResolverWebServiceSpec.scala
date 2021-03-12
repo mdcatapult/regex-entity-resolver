@@ -1,7 +1,6 @@
 package io.mdcatapult.resolver.webservice
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import akka.http.scaladsl.model.Uri
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.util.ByteString
 import io.mdcatapult.resolver.webservice.model.Project

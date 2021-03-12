@@ -3,14 +3,12 @@ package io.mdcatapult.resolver.webservice.routes
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.server.directives.FileInfo
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
 import com.typesafe.scalalogging.LazyLogging
 import io.mdcatapult.resolver.webservice.utils.ProjectCodeResolver
 import spray.json._
 
-import java.io.File
 import scala.concurrent.ExecutionContextExecutor
 import scala.util.{Failure, Success, Try}
 
