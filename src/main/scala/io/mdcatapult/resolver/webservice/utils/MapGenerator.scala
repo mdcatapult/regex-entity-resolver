@@ -1,8 +1,8 @@
 package io.mdcatapult.resolver.webservice.utils
 
-import org.apache.poi.ss.usermodel.{DataFormatter, Row, WorkbookFactory}
+import org.apache.poi.ss.usermodel.{DataFormatter, Row, Sheet, Workbook, WorkbookFactory}
 
-import java.io.File
+import java.io.{File, FileInputStream}
 import scala.io.Source
 import scala.jdk.CollectionConverters.IterableHasAsScala
 
@@ -45,9 +45,11 @@ object MapGenerator {
    * @return Map with projectCode|projectName key value pairs
    */
   def createProjectCodeMapFromXLSXFile(filepath: String): Map[String, String] = {
-    val sheet = WorkbookFactory.create(new File(filepath))
-    val tab = sheet.getSheetAt(0)
-    sheet.close()
+    val workBookFile: File = new File(filepath)
+    val fis: FileInputStream = new FileInputStream(workBookFile)
+    val wb: Workbook = WorkbookFactory.create(fis)
+    val tab: Sheet = wb.getSheetAt(0)
+    wb.close()
     val formatter = new DataFormatter()
 
     tab.asScala.collect { row =>
