@@ -13,6 +13,19 @@ The service can be run locally with `sbt run`, or by running the main `ProjectRe
 
  The service runs on `localhost:8081`, but this can be altered with the `PROJECT_RESOLVER_HOST` and `PROJECT_RESOLVER_PORT` environment variables.
 
+### Containerisation
+
+Build the Docker image with the following command in the root folder:
+
+``` docker build -t resolver-service .```
+
+This requires a compiled .jar file in the /target file structure, which must first be generated with `sbt assembly`
+
+To run the container:
+
+`docker run --publish 8081:8081 resolver-service`
+
+
 ### Environment Variables
 
 Although currently configured to identify and resolve MDC project codes, by overriding the default environment variables  a custom regular expression and filepath the tool can be used as a generic regex service to resolve one value to another.  
