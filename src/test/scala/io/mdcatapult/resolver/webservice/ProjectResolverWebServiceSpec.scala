@@ -5,6 +5,7 @@ import akka.http.scaladsl.testkit.ScalatestRouteTest
 import akka.util.ByteString
 import io.mdcatapult.resolver.webservice.model.Project
 import io.mdcatapult.resolver.webservice.routes.Routes
+import io.mdcatapult.resolver.webservice.utils.ProjectCodeResolver
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -12,9 +13,12 @@ import org.scalatest.wordspec.AnyWordSpec
 class ProjectResolverWebServiceSpec extends AnyWordSpec
   with Matchers
   with ScalatestRouteTest
-  with SprayJsonSupport {
+  with SprayJsonSupport
+  with TestDependencies {
 
-  private val routes = new Routes()
+  private val resolver = new ProjectCodeResolver(mdcProjectRegex, projectCodeMap)
+
+  private val routes = new Routes(resolver)
   private val projectsUri = "/projects"
   private val exampleCode = "MDCP-0167"
   private val notACode = "text"
@@ -25,7 +29,7 @@ class ProjectResolverWebServiceSpec extends AnyWordSpec
       Get(s"$projectsUri/$exampleCode") ~> routes.topLevelRoute ~> check {
         val result = responseAs[List[Project]]
         assert(result.length === 1)
-        assert(result(0).name === "Persephone")
+        assert(result.head.name === "Persephone")
       }
     }
 

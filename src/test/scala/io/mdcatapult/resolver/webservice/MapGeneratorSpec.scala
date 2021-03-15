@@ -8,28 +8,38 @@ import org.scalatest.wordspec.AnyWordSpec
 class MapGeneratorSpec extends AnyWordSpec with Matchers {
 
   private val exampleTextFilePath = "src/test/resources/codes.txt"
+  private val emptyTextFilePath = "src/test/resources/empty.txt"
   private val exampleXLSXFilePath = "src/test/resources/informatics_projects.xlsx"
-  private val exampleOtherFilePath = "src/test/resources/codes.csv"
+  private val exampleOtherFilePath = "src/test/resources/empty.csv"
+  private val emptyXLSXFilePath = "src/test/resources/empty.xlsx"
 
   val totalNumberProjects = 44
 
   "The mapGenerator" should {
     "generate a map when passed a text file" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(exampleTextFilePath)
-      assert(codeMap.toList.length === totalNumberProjects)
+      assert(codeMap.get.toList.length === totalNumberProjects)
+    }
+
+    "throw an error if passed an empty text file" in {
+      val codeMap = MapGenerator.createProjectCodeMapHandler(emptyTextFilePath)
+      assert(codeMap.isFailure)
     }
 
     "generate a map when passed an xlsx file, omitting first row" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(exampleXLSXFilePath)
-      assert(codeMap.toList.length === totalNumberProjects)
+      assert(codeMap.get.toList.length === totalNumberProjects)
     }
+
+//    "throw an error if passed an empty xlsx file" in {
+//      val codeMap = MapGenerator.createProjectCodeMapHandler(emptyXLSXFilePath)
+//      assert(codeMap.isFailure)
+//    }
 
     "throw an error if passed file does not have correct extension" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(exampleOtherFilePath)
-      println(codeMap)
-      assert(true)
+      assert(codeMap.isFailure)
     }
-
 
   }
 }

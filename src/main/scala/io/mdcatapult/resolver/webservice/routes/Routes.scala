@@ -12,7 +12,7 @@ import spray.json._
 import scala.concurrent.ExecutionContextExecutor
 import scala.util.{Failure, Success, Try}
 
-class Routes(implicit e: ExecutionContextExecutor, m: Materializer) extends LazyLogging {
+class Routes(projectCodeResolver: ProjectCodeResolver)(implicit e: ExecutionContextExecutor, m: Materializer) extends LazyLogging {
 
   val topLevelRoute: Route =
     concat(
@@ -22,7 +22,7 @@ class Routes(implicit e: ExecutionContextExecutor, m: Materializer) extends Lazy
 
   def stringRoute(projectCode: String): Route = get {
     val resolverResult = Try {
-      ProjectCodeResolver.resolve(projectCode).toJson.toString
+      projectCodeResolver.resolve(projectCode).toJson.toString
     }
     complete {
       resolverResult match {
@@ -41,7 +41,7 @@ class Routes(implicit e: ExecutionContextExecutor, m: Materializer) extends Lazy
       complete {
         Unmarshal(httpEntity).to[String].map(body => {
           val resolverResult = Try {
-            ProjectCodeResolver.resolve(body).toJson.toString
+            projectCodeResolver.resolve(body).toJson.toString
           }
           resolverResult match {
             case Success(result) =>

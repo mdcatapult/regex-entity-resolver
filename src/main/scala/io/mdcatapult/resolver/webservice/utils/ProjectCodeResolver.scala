@@ -4,11 +4,7 @@ import io.mdcatapult.resolver.webservice.model.Project
 import scala.util.matching.Regex
 
 
-object ProjectCodeResolver {
-
-  val config = ConfigLoader.loadConfig()
-  val projectCodeMap: Map[String, String] = MapGenerator.createProjectCodeMapHandler(config.sourceFilePath)
-  val mdcProjectRegex: Regex = config.regex.r
+class ProjectCodeResolver(mdcProjectRegex: Regex, projectCodeMap: Map[String, String]) {
 
   /**
    * Given a string, identifies MDC project codes and resolves them to project name

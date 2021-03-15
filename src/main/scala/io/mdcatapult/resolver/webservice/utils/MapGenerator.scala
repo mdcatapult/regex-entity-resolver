@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.{DataFormatter, Row, Sheet, Workbook, Workboo
 import java.io.{File, FileInputStream}
 import scala.io.Source
 import scala.jdk.CollectionConverters.IterableHasAsScala
+import scala.util.{Failure, Success, Try}
 
 /**
  * Generate a Map of key value pairs from XSLX or text file
@@ -13,16 +14,19 @@ import scala.jdk.CollectionConverters.IterableHasAsScala
 object MapGenerator extends LazyLogging {
 
 
-  def createProjectCodeMapHandler(filepath: String): Map[String, String] = {
+  def createProjectCodeMapHandler(filepath: String): Try[Map[String, String]] = {
     val fileType = filepath.split("\\.").last
-    fileType match {
-      case "xlsx" => createProjectCodeMapFromXLSXFile(filepath)
-      case "txt" => createProjectCodeMapFromTextFile(filepath)
-      case _ =>
-        val exception = "Error: source file extension must be either xlsx or txt"
-        logger.info(exception)
-        throw new Exception(exception)
-    }
+    val projectCodeMapTry: Try[Map[String, String]] =
+      fileType match {
+        case "xlsx" => Success(createProjectCodeMapFromXLSXFile(filepath))
+        case "txt" => Success(createProjectCodeMapFromTextFile(filepath))
+        case _ =>
+          Failure(new Exception("Error: source file extension must be either xlsx or txt"))
+      }
+    projectCodeMapTry.flatMap(projectCodeMap => {
+      if (projectCodeMap.nonEmpty) Success(projectCodeMap)
+      else Failure(new Exception("Error: file has no valid rows"))
+    })
   }
 
   /**
@@ -57,13 +61,20 @@ object MapGenerator extends LazyLogging {
     wb.close()
     val formatter = new DataFormatter()
 
-    tab.asScala.collect { row =>
-      val code = Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
-      val name = Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL))
-      (code, name) match {
-        case (Some(code), Some(name)) => formatter.formatCellValue(code) -> formatter.formatCellValue(name)
-      }
-    }.tail.toMap
+    tab.asScala
+      .view
+      .map(row => {
+        (Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)),
+          Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)))
+      })
+      .filter(rowOption => {
+        rowOption._1.isDefined && rowOption._2.isDefined
+      })
+      .map(definedRows => {
+        (formatter.formatCellValue(definedRows._1.get), formatter.formatCellValue(definedRows._2.get))
+      })
+      .tail
+      .toMap
   }
 
 }
