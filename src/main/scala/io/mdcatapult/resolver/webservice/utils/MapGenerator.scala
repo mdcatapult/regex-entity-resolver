@@ -1,5 +1,6 @@
 package io.mdcatapult.resolver.webservice.utils
 
+import com.typesafe.scalalogging.LazyLogging
 import org.apache.poi.ss.usermodel.{DataFormatter, Row, Sheet, Workbook, WorkbookFactory}
 
 import java.io.{File, FileInputStream}
@@ -9,7 +10,7 @@ import scala.jdk.CollectionConverters.IterableHasAsScala
 /**
  * Generate a Map of key value pairs from XSLX or text file
  */
-object MapGenerator {
+object MapGenerator extends LazyLogging {
 
 
   def createProjectCodeMapHandler(filepath: String): Map[String, String] = {
@@ -17,6 +18,10 @@ object MapGenerator {
     fileType match {
       case "xlsx" => createProjectCodeMapFromXLSXFile(filepath)
       case "txt" => createProjectCodeMapFromTextFile(filepath)
+      case _ =>
+        val exception = "Error: source file extension must be either xlsx or txt"
+        logger.info(exception)
+        throw new Exception(exception)
     }
   }
 
