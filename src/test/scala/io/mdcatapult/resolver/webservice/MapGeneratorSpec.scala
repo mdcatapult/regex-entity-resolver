@@ -9,6 +9,8 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
 
   private val exampleTextFilePath = "src/test/resources/codes.txt"
   private val emptyTextFilePath = "src/test/resources/empty.txt"
+  private val textFileNoEqualsInRowPath = "src/test/resources/missingEquals.txt"
+  private val textFileNoValueInRowPath = "src/test/resources/missingValue.txt"
   private val exampleXLSXFilePath = "src/test/resources/informatics_projects.xlsx"
   private val exampleOtherFilePath = "src/test/resources/empty.csv"
   private val emptyXLSXFilePath = "src/test/resources/empty.xlsx"
@@ -23,6 +25,16 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
 
     "throw an error if passed an empty text file" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(emptyTextFilePath)
+      assert(codeMap.isFailure)
+    }
+
+    "throw an error if passed text file has a row with nothing following an equals sign" in {
+      val codeMap = MapGenerator.createProjectCodeMapHandler(textFileNoValueInRowPath)
+      assert(codeMap.isFailure)
+    }
+
+    "throw an error if passed text file has a row with no equals sign" in {
+      val codeMap = MapGenerator.createProjectCodeMapHandler(textFileNoEqualsInRowPath)
       assert(codeMap.isFailure)
     }
 
