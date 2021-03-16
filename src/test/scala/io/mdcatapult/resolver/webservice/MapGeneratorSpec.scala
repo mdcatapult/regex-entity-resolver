@@ -31,10 +31,10 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
       assert(codeMap.get.toList.length === totalNumberProjects)
     }
 
-//    "throw an error if passed an empty xlsx file" in {
-//      val codeMap = MapGenerator.createProjectCodeMapHandler(emptyXLSXFilePath)
-//      assert(codeMap.isFailure)
-//    }
+    "throw an error if passed an empty xlsx file" in {
+      val codeMap = MapGenerator.createProjectCodeMapHandler(emptyXLSXFilePath)
+      assert(codeMap.isFailure)
+    }
 
     "throw an error if passed file does not have correct extension" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(exampleOtherFilePath)

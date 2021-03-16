@@ -16,17 +16,19 @@ object MapGenerator extends LazyLogging {
 
   def createProjectCodeMapHandler(filepath: String): Try[Map[String, String]] = {
     val fileType = filepath.split("\\.").last
-    val projectCodeMapTry: Try[Map[String, String]] =
+    val projectCodeMap: Try[Map[String, String]] = {
       fileType match {
-        case "xlsx" => Success(createProjectCodeMapFromXLSXFile(filepath))
-        case "txt" => Success(createProjectCodeMapFromTextFile(filepath))
+        case "xlsx" => createProjectCodeMapFromXLSXFile(filepath)
+        case "txt" => createProjectCodeMapFromTextFile(filepath)
         case _ =>
           Failure(new Exception("Error: source file extension must be either xlsx or txt"))
       }
-    projectCodeMapTry.flatMap(projectCodeMap => {
-      if (projectCodeMap.nonEmpty) Success(projectCodeMap)
-      else Failure(new Exception("Error: file has no valid rows"))
-    })
+    }
+
+    if (projectCodeMap.isFailure) {
+      logger.error(projectCodeMap.failed.get.getMessage)
+    }
+    projectCodeMap
   }
 
   /**
@@ -34,18 +36,24 @@ object MapGenerator extends LazyLogging {
    * @param filepath Path to text file in the format code|=|name
    * @return Map of code|name key value pairs
    */
-  def createProjectCodeMapFromTextFile(filepath: String): Map[String, String] = {
+  private def createProjectCodeMapFromTextFile(filepath: String): Try[Map[String, String]] = {
+    val codeMapTry = Try {
+      val source = Source.fromFile(filepath)
+      val lines = source.getLines().toList
+      source.close()
 
-    val source = Source.fromFile(filepath)
-    val lines = source.getLines().toList
-    source.close()
-
-    lines.map(line => {
-      val parts = line.split("=")
-      val code = parts(0)
-      val name = parts(1)
-      code -> name
-    }).toMap
+      if (lines.isEmpty) {
+        throw new Exception("Error: no lines found in source file - could not create CodeMap")
+      } else {
+        lines.map(line => {
+          val parts = line.split("=")
+          val code = parts(0)
+          val name = parts(1)
+          code -> name
+        }).toMap
+      }
+    }
+    codeMapTry
   }
 
   /**
@@ -53,28 +61,35 @@ object MapGenerator extends LazyLogging {
    * @param filepath Path to xlsx file where the first two columns are projectCode and projectName
    * @return Map with projectCode|projectName key value pairs
    */
-  def createProjectCodeMapFromXLSXFile(filepath: String): Map[String, String] = {
+  private def createProjectCodeMapFromXLSXFile(filepath: String): Try[Map[String, String]] = {
     val workBookFile: File = new File(filepath)
     val fis: FileInputStream = new FileInputStream(workBookFile)
-    val wb: Workbook = WorkbookFactory.create(fis)
-    val tab: Sheet = wb.getSheetAt(0)
-    wb.close()
-    val formatter = new DataFormatter()
-
-    tab.asScala
-      .view
-      .map(row => {
-        (Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)),
-          Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)))
-      })
-      .filter(rowOption => {
-        rowOption._1.isDefined && rowOption._2.isDefined
-      })
-      .map(definedRows => {
-        (formatter.formatCellValue(definedRows._1.get), formatter.formatCellValue(definedRows._2.get))
-      })
-      .tail
-      .toMap
+    val wb: Try[Workbook] = Try {
+      WorkbookFactory.create(fis)
+    }
+    wb match {
+      case Success(book) =>
+        val tab: Sheet = book.getSheetAt(0)
+        book.close()
+        val formatter = new DataFormatter()
+        Try {
+          tab.asScala
+            .view
+            .map(row => {
+              (Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)),
+                Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)))
+            })
+            .filter(rowOption => {
+              rowOption._1.isDefined && rowOption._2.isDefined
+            })
+            .map(definedRows => {
+              (formatter.formatCellValue(definedRows._1.get), formatter.formatCellValue(definedRows._2.get))
+            })
+            .tail
+            .toMap
+        }
+      case Failure(exception) => Failure(exception)
+    }
   }
 
 }
