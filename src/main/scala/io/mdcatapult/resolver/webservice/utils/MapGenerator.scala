@@ -48,7 +48,9 @@ object MapGenerator extends LazyLogging {
         lines.map(line => {
           val parts = line.split("=")
           val code = parts(0)
+          if (code.isEmpty) throw new Exception("Error: incomplete row in source file - could not create CodeMap")
           val name = parts(1)
+          print(code, name)
           code -> name
         }).toMap
       }
