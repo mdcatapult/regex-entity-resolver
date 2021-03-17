@@ -45,7 +45,7 @@ object MapGenerator extends LazyLogging {
       if (lines.isEmpty) {
         throw new Exception("Error: no lines found in source file - could not create map")
       } else lines
-        .filter(line => line.length > 0)
+        .filter(line => line.nonEmpty)
         .map(line => {
           val parts = line.split("=", -2)
           val code = parts(0)
