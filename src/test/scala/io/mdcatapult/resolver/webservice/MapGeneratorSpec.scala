@@ -13,6 +13,8 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
   private val textFileNoEqualsInRowPath = "src/test/resources/missingEquals.txt"
   private val textFileNoValueInRowPath = "src/test/resources/missingValue.txt"
   private val exampleXLSXFilePath = "src/test/resources/informatics_projects.xlsx"
+  private val xLSXNoFirstColumnFilePath = "src/test/resources/emptyFirstColumn.xlsx"
+  private val xLSXNoSecondColumnFilePath = "src/test/resources/emptySecondColumn.xlsx"
   private val exampleOtherFilePath = "src/test/resources/empty.csv"
   private val emptyXLSXFilePath = "src/test/resources/empty.xlsx"
 
@@ -29,17 +31,17 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
       assert(codeMap.isFailure)
     }
 
-    "throw an error if passed text file has a row with nothing preceding an equals sign" in {
+    "NOT throw an error if passed text file has a row with nothing preceding an equals sign" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(textFileNoKeyInRowPath)
-      assert(codeMap.isFailure)
+      assert(codeMap.isSuccess)
     }
 
-    "throw an error if passed text file has a row with nothing following an equals sign" in {
+    "NOT throw an error if passed text file has a row with nothing following an equals sign" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(textFileNoValueInRowPath)
-      assert(codeMap.isFailure)
+      assert(codeMap.isSuccess)
     }
 
-    "throw an error if passed text file has a row with no equals sign" in {
+    "throw an error if passed text file has a row with no equals sign (delimiter)" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(textFileNoEqualsInRowPath)
       assert(codeMap.isFailure)
     }
@@ -47,6 +49,16 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
     "generate a map when passed an xlsx file, omitting first row" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(exampleXLSXFilePath)
       assert(codeMap.get.toList.length === totalNumberProjects)
+    }
+
+    "NOT error if passed xlsx file contains a row with an empty first column" in {
+      val codeMap = MapGenerator.createProjectCodeMapHandler(xLSXNoFirstColumnFilePath)
+      assert(codeMap.isSuccess)
+    }
+
+    "NOT error if passed xlsx file contains a row with an empty second column" in {
+      val codeMap = MapGenerator.createProjectCodeMapHandler(xLSXNoSecondColumnFilePath)
+      assert(codeMap.isSuccess)
     }
 
     "throw an error if passed an empty xlsx file" in {

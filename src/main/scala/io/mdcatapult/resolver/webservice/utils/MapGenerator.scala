@@ -43,17 +43,14 @@ object MapGenerator extends LazyLogging {
       source.close()
 
       if (lines.isEmpty) {
-        throw new Exception("Error: no lines found in source file - could not create CodeMap")
-      } else {
-        lines.map(line => {
-          val parts = line.split("=")
-          val code = parts(0)
-          if (code.isEmpty) throw new Exception("Error: incomplete row in source file - could not create CodeMap")
-          val name = parts(1)
-          print(code, name)
-          code -> name
-        }).toMap
-      }
+        throw new Exception("Error: no lines found in source file - could not create map")
+      } else lines.map(line => {
+        val parts = line.split("=", -2)
+        val code = parts(0)
+        val name = parts(1)
+        if (code.isEmpty || name.isEmpty) logger.warn(s"Warning: incomplete row in source file containing $code $name")
+        code -> name
+      }).toMap
     }
     codeMapTry
   }
@@ -74,14 +71,17 @@ object MapGenerator extends LazyLogging {
         val tab: Sheet = book.getSheetAt(0)
         book.close()
         val formatter = new DataFormatter()
-        Try {
-          tab.asScala
+          Try {
+          val rows = tab.asScala
             .view
             .map(row => {
               (Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)),
                 Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)))
             })
-            .filter(rowOption => {
+            if (rows.toList.isEmpty) throw new Exception("Error: no lines found in source file - could not create map")
+            rows.filter(rowOption => {
+              if (rowOption._1.isEmpty || rowOption._2.isEmpty)
+                logger.warn(s"Warning: incomplete row in source file containing ${rowOption._1.getOrElse(rowOption._2.getOrElse())}")
               rowOption._1.isDefined && rowOption._2.isDefined
             })
             .map(definedRows => {
