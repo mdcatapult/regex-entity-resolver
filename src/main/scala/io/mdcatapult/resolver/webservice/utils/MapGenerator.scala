@@ -44,13 +44,16 @@ object MapGenerator extends LazyLogging {
 
       if (lines.isEmpty) {
         throw new Exception("Error: no lines found in source file - could not create map")
-      } else lines.map(line => {
-        val parts = line.split("=", -2)
-        val code = parts(0)
-        val name = parts(1)
-        if (code.isEmpty || name.isEmpty) logger.warn(s"Warning: incomplete row in source file containing $code $name")
-        code -> name
-      }).toMap
+      } else lines
+        .filter(line => line.length > 0)
+        .map(line => {
+          val parts = line.split("=", -2)
+          val code = parts(0)
+          val name = parts(1)
+          // log warning only if a single value is present in a row - not if row is empty
+          if (code.isEmpty && !name.isEmpty || name.isEmpty && !code.isEmpty) logger.warn(s"Warning: incomplete row in source file containing $code $name")
+          code -> name
+        }).toMap
     }
     codeMapTry
   }
@@ -71,19 +74,20 @@ object MapGenerator extends LazyLogging {
         val tab: Sheet = book.getSheetAt(0)
         book.close()
         val formatter = new DataFormatter()
-          Try {
+        Try {
           val rows = tab.asScala
             .view
             .map(row => {
               (Option(row.getCell(0, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)),
                 Option(row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL)))
             })
-            if (rows.toList.isEmpty) throw new Exception("Error: no lines found in source file - could not create map")
-            rows.filter(rowOption => {
-              if (rowOption._1.isEmpty || rowOption._2.isEmpty)
-                logger.warn(s"Warning: incomplete row in source file containing ${rowOption._1.getOrElse(rowOption._2.getOrElse())}")
-              rowOption._1.isDefined && rowOption._2.isDefined
-            })
+          if (rows.toList.isEmpty) throw new Exception("Error: no lines found in source file - could not create map")
+          rows.filter(rowOption => {
+            // log warning only if a single value is present in a row - not if row is empty
+            if (rowOption._1.isEmpty && rowOption._2.isDefined || rowOption._2.isEmpty && rowOption._1.isDefined)
+              logger.warn(s"Warning: incomplete row in source file containing ${rowOption._1.getOrElse(rowOption._2.getOrElse())}")
+            rowOption._1.isDefined && rowOption._2.isDefined
+          })
             .map(definedRows => {
               (formatter.formatCellValue(definedRows._1.get), formatter.formatCellValue(definedRows._2.get))
             })

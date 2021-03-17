@@ -12,6 +12,8 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
   private val textFileNoKeyInRowPath = "src/test/resources/missingKey.txt"
   private val textFileNoEqualsInRowPath = "src/test/resources/missingEquals.txt"
   private val textFileNoValueInRowPath = "src/test/resources/missingValue.txt"
+  private val textFileMissingRowPath = "src/test/resources/missingRow.txt"
+  private val xlsxFileMissingRowPath = "src/test/resources/missingRow.xlsx"
   private val exampleXLSXFilePath = "src/test/resources/informatics_projects.xlsx"
   private val xLSXNoFirstColumnFilePath = "src/test/resources/emptyFirstColumn.xlsx"
   private val xLSXNoSecondColumnFilePath = "src/test/resources/emptySecondColumn.xlsx"
@@ -19,6 +21,7 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
   private val emptyXLSXFilePath = "src/test/resources/empty.xlsx"
 
   val totalNumberProjects = 44
+  val totalProjectsInMissingRowFile = 3
 
   "The mapGenerator" should {
     "generate a map when passed a text file" in {
@@ -39,6 +42,11 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
     "NOT throw an error if passed text file has a row with nothing following an equals sign" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(textFileNoValueInRowPath)
       assert(codeMap.isSuccess)
+    }
+
+    "omit empty lines in a text file" in {
+      val codeMap = MapGenerator.createProjectCodeMapHandler(textFileMissingRowPath)
+      assert(codeMap.get.toList.length === totalProjectsInMissingRowFile)
     }
 
     "throw an error if passed text file has a row with no equals sign (delimiter)" in {
@@ -64,6 +72,11 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
     "throw an error if passed an empty xlsx file" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(emptyXLSXFilePath)
       assert(codeMap.isFailure)
+    }
+
+    "omit empty rows in an xlsx file" in {
+      val codeMap = MapGenerator.createProjectCodeMapHandler(xlsxFileMissingRowPath)
+      assert(codeMap.get.toList.length === totalProjectsInMissingRowFile)
     }
 
     "throw an error if passed file does not have correct extension" in {
