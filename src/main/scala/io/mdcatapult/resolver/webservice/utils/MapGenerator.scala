@@ -50,8 +50,7 @@ object MapGenerator extends LazyLogging {
           val parts = line.split("=", -2)
           val code = parts(0)
           val name = parts(1)
-          // log warning only if a single value is present in a row - not if row is empty
-          if (code.isEmpty && !name.isEmpty || name.isEmpty && !code.isEmpty) logger.warn(s"Warning: incomplete row in source file containing $code $name")
+          if (code.isEmpty || name.isEmpty) logger.warn(s"Warning: incomplete row in source file containing $code $name")
           code -> name
         }).toMap
     }
