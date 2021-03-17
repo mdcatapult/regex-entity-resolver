@@ -34,6 +34,7 @@ Although currently configured to identify and resolve MDC project codes, by over
 * `PROJECT_RESOLVER_PORT`: default value is 0.0.0.0
 * `PROJECT_RESOLVER_FILEPATH`: path to `.xlsx` or `.txt` file used to resolve possible matches in a text.  Defaults to the spreadsheet in this repo (`src/main/resources/informatics_projects.xlsx`) 
 * `PROJECT_RESOLVER_REGEX`: regular expression used to identify possible matches in a text. Defaults to `\bMDCP-\d{4}\b`
+* `PROJECT_RESOLVER_ENDPOINT`: determines the url path of the web service.  Defaults to "projects"
 
 ### Endpoints
 

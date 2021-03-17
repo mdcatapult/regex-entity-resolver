@@ -22,6 +22,7 @@ final case class AppConfig(
                             host: String,
                             port: Int,
                             sourceFilePath: String,
-                            regex: String
+                            regex: String,
+                            urlPath: String
                           )
 final case class WebServiceConfig(appConfig: AppConfig)

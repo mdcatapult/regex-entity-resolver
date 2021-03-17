@@ -12,12 +12,12 @@ import spray.json._
 import scala.concurrent.ExecutionContextExecutor
 import scala.util.{Failure, Success, Try}
 
-class Routes(projectCodeResolver: ProjectCodeResolver)(implicit e: ExecutionContextExecutor, m: Materializer) extends LazyLogging {
+class Routes(projectCodeResolver: ProjectCodeResolver, urlPath: String)(implicit e: ExecutionContextExecutor, m: Materializer) extends LazyLogging {
 
   val topLevelRoute: Route =
     concat(
-      path("projects")(bodyRoute),
-      pathPrefix("projects" / Segment)(stringRoute)
+      path(urlPath)(bodyRoute),
+      pathPrefix(urlPath / Segment)(stringRoute)
     )
 
   def stringRoute(projectCode: String): Route = get {
