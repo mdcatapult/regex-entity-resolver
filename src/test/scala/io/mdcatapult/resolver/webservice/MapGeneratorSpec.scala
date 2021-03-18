@@ -27,6 +27,7 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
     "generate a map when passed a text file" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(exampleTextFilePath)
       assert(codeMap.get.toList.length === totalNumberProjects)
+      assert(codeMap.get.toList.contains("MDCP-0199", "Aphrodite"))
     }
 
     "throw an error if passed an empty text file" in {
@@ -57,16 +58,19 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
     "generate a map when passed an xlsx file, omitting first row" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(exampleXLSXFilePath)
       assert(codeMap.get.toList.length === totalNumberProjects)
+      assert(codeMap.get.toList.contains("MDCP-0199", "Aphrodite"))
     }
 
     "NOT error if passed xlsx file contains a row with an empty first column" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(xLSXNoFirstColumnFilePath)
       assert(codeMap.isSuccess)
+      assert(codeMap.get.toList.contains("MDCP-0142", "Artemis"))
     }
 
     "NOT error if passed xlsx file contains a row with an empty second column" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(xLSXNoSecondColumnFilePath)
       assert(codeMap.isSuccess)
+      assert(codeMap.get.toList.contains("MDCP-0159", "Charon"))
     }
 
     "throw an error if passed an empty xlsx file" in {
@@ -77,6 +81,7 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
     "omit empty rows in an xlsx file" in {
       val codeMap = MapGenerator.createProjectCodeMapHandler(xlsxFileMissingRowPath)
       assert(codeMap.get.toList.length === totalProjectsInMissingRowFile)
+      assert(codeMap.get.toList.contains("MDCP-0199", "Aphrodite"))
     }
 
     "throw an error if passed file does not have correct extension" in {
