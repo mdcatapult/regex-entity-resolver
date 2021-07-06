@@ -35,6 +35,31 @@ Although currently configured to identify and resolve MDC project codes, by over
 * `PROJECT_RESOLVER_FILEPATH`: path to `.xlsx` or `.txt` file used to resolve possible matches in a text.  Defaults to the spreadsheet in this repo (`src/main/resources/informatics_projects.xlsx`) 
 * `PROJECT_RESOLVER_REGEX`: regular expression used to identify possible matches in a text. Defaults to `\bMDCP-\d{4}\b`
 * `PROJECT_RESOLVER_ENDPOINT`: determines the url path of the web service.  Defaults to "projects"
+* `RESOLVER_MATCH_FROM_REGEX`: whether the resolved entity is matched from a regex itself. Boolean and default is `false`.
+* `RESOLVER_MATCH_REGEX`: the regex to determine the resolved entity match (see `RESOLVER_MATCH_FROM_REGEX`)
+
+If using a regex to match the resolved entity then the file referenced by `PROJECT_RESOLVER_FILEPATH` should match with the `RESOLVER_MATCH_REGEX`.  
+For example, the initial regex (`PROJECT_RESOLVER_REGEX`) to match something could be:
+```regexp
+\b(ABC|DEF)\s{0,1}.{0,1}\d{1,20}\b
+```
+The file containing the resolvers could be:
+```
+ABC="I am the first entity"
+DEF="I am the second entity"
+```
+and the regular expression to resolve the entity could be:
+```regexp
+\b\s{0,1}.{0,1}\d{1,20}\b
+```
+This would match `ABC-123` or `DEF-123` and respond with eg:
+
+```json
+[{"code":"ABC-123","name":"I am the first entity"}]
+```
+
+In the code the `RESOLVER_MATCH_REGEX` is used to extract text from the match so that it will then match whatever is in the file. ie `-123` is matched 
+and this is then extracted from `ABC-123` which then matches `ABC` in the resolver file.
 
 ### Endpoints
 

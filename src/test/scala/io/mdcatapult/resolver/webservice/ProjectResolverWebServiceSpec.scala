@@ -16,7 +16,7 @@ class ProjectResolverWebServiceSpec extends AnyWordSpec
   with SprayJsonSupport
   with TestDependencies {
 
-  private val resolver = new ProjectCodeResolver(mdcProjectRegex, projectCodeMap)
+  private val resolver = new ProjectCodeResolver(mdcProjectRegex, projectCodeMap)(config)
 
   private val projectsUri = "projects"
   private val routes = new Routes(resolver, projectsUri)

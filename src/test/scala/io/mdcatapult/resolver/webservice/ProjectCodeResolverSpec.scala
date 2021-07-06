@@ -12,7 +12,7 @@ class ProjectCodeResolverSpec extends AnyWordSpec with Matchers with TestDepende
   private val exampleInexistentCode = "Some text. MDCP-9999. Some other stuff."
   private val exampleInvalidCode = "Some text. MDCP-01678. Some other stuff."
 
-  private val resolver = new ProjectCodeResolver(mdcProjectRegex, projectCodeMap)
+  private val resolver = new ProjectCodeResolver(mdcProjectRegex, projectCodeMap)(config)
 
   "The projectResolver" should {
     "resolve a single project code" in {

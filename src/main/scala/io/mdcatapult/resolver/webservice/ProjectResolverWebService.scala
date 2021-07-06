@@ -25,7 +25,7 @@ object ProjectResolverWebService extends LazyLogging {
         logger.error(exception.getMessage)
         throw exception
       case Success(projectCodeMap) =>
-        val resolver = new ProjectCodeResolver(mdcProjectRegex, projectCodeMap)
+        val resolver = new ProjectCodeResolver(mdcProjectRegex, projectCodeMap)(config)
         val topLevelRoute = new Routes(resolver, config.urlPath).topLevelRoute
         val host = config.host
         val port = config.port
