@@ -69,7 +69,7 @@ curl --location --request GET 'http://localhost:8081/projects/MDCP-0199
 ```
 `POST /projects` - accepts raw text in the request body, e.g.
 ```curl
-curl --location --request POST 'http://localhost:8081/projects' --header 'Content-Type: text/plain'--data-raw 'Your string...'
+curl --location --request POST 'http://localhost:8081/projects' --header 'Content-Type: text/plain' --data-raw 'Your string...'
 ```
 
 
