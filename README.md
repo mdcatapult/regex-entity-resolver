@@ -1,9 +1,9 @@
-# MDC Project Resolver
+# MDC Project & Company Codes Resolver
 
-Scala tool for identifying MDC project codes within a text and resolving the codes to a project name via a single POST and a single GET endpoint.
+Scala tool for identifying MDC project codes and drug research project comapny codes within a text and resolving the codes to a project name via a single POST and a single GET endpoint.
 Reads a source file into memory and generates a map of project code to project names which is then used to resolve codes matching a specific regex format (see below).  The source file can be either:
 * an `.xlsx` file where the first two columns represent `projectCode` and `projectName`.  Data must be in the first tab of the worksheet, and the first row of the spreadsheet is ignored on the basis that these will usually be column headings. 
-* a `.txt` file in the format `projectCode=projectName`
+* a `.txt` file in the format `projectCode=projectName`. Examples of company codes and the regexes for resolving them are provided in `company_codes_and_regexes.txt` and `company_codes_resolver.txt`.
 
 Examples of both file types can be found in the `src/test/resources` directory.
 
