@@ -30,7 +30,7 @@ class ProjectCodeResolver(mdcProjectRegex: Regex, projectCodeMap: Map[String, St
     // ensure we only return codes which resolve to a project
     codes.collect {
       case (code, Some(name)) => Project(code, name)
-    }
+    }.distinct
   }
 
 }

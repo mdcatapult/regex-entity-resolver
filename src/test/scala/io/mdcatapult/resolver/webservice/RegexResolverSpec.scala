@@ -41,8 +41,13 @@ class RegexResolverSpec extends AnyWordSpec with Matchers  {
     "find a mix of similar things" in {
       val results = resolver.resolve("This contains ABC-123 but also DEF-123 as well as DEF-456 and ABC-456")
       assert(results.length === 4)
-      assert(results(0).equals(Project("ABC-123", "\"I am a code\"")))
       assert(Set(Project("ABC-456","\"I am a code\""), Project("ABC-123","\"I am a code\""), Project("DEF-456","\"I am another code\""), Project("DEF-123","\"I am another code\"")).subsetOf(results.toSet))
+    }
+
+    "dedup the same thing" in {
+      val results = resolver.resolve("This contains ABC-123 but also ABC-123")
+      assert(results.length === 1)
+      assert(results(0).equals(Project("ABC-123", "\"I am a code\"")))
     }
 
   }
