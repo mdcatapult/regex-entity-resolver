@@ -6,13 +6,13 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
 import com.typesafe.scalalogging.LazyLogging
-import io.mdcatapult.resolver.webservice.utils.ProjectCodeResolver
+import io.mdcatapult.resolver.webservice.utils.EntityResolver
 import spray.json._
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.util.{Failure, Success, Try}
 
-class Routes(projectCodeResolver: ProjectCodeResolver, urlPath: String)(implicit e: ExecutionContextExecutor, m: Materializer) extends LazyLogging {
+class Routes(entityResolver: EntityResolver, urlPath: String)(implicit e: ExecutionContextExecutor, m: Materializer) extends LazyLogging {
 
   val topLevelRoute: Route =
     concat(
@@ -20,14 +20,14 @@ class Routes(projectCodeResolver: ProjectCodeResolver, urlPath: String)(implicit
       pathPrefix(urlPath / Segment)(stringRoute)
     )
 
-  def stringRoute(projectCode: String): Route = get {
+  def stringRoute(entity: String): Route = get {
     val resolverResult = Try {
-      projectCodeResolver.resolve(projectCode).toJson.toString
+      entityResolver.resolve(entity).toJson.toString
     }
     complete {
       resolverResult match {
         case Success(result) =>
-          logger.info(s" Success: HTTP Response for $projectCode")
+          logger.info(s" Success: HTTP Response for $entity")
           HttpResponse(StatusCodes.OK, entity = HttpEntity(ContentTypes.`application/json`, result))
         case Failure(e) =>
           logger.error("Failed exception", e)
@@ -41,7 +41,7 @@ class Routes(projectCodeResolver: ProjectCodeResolver, urlPath: String)(implicit
       complete {
         Unmarshal(httpEntity).to[String].map(body => {
           val resolverResult = Try {
-            projectCodeResolver.resolve(body).toJson.toString
+            entityResolver.resolve(body).toJson.toString
           }
           resolverResult match {
             case Success(result) =>

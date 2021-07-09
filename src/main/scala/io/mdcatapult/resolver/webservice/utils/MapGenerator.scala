@@ -14,21 +14,21 @@ import scala.util.{Failure, Success, Try}
 object MapGenerator extends LazyLogging {
 
 
-  def createProjectCodeMapHandler(filepath: String): Try[Map[String, String]] = {
+  def createEntityMapHandler(filepath: String): Try[Map[String, String]] = {
     val fileType = filepath.split("\\.").last
-    val projectCodeMap: Try[Map[String, String]] = {
+    val entityMap: Try[Map[String, String]] = {
       fileType match {
-        case "xlsx" => createProjectCodeMapFromXLSXFile(filepath)
-        case "txt" => createProjectCodeMapFromTextFile(filepath)
+        case "xlsx" => createEntityMapFromXLSXFile(filepath)
+        case "txt" => createEntityMapFromTextFile(filepath)
         case _ =>
           Failure(new Exception("Error: source file extension must be either xlsx or txt"))
       }
     }
 
-    if (projectCodeMap.isFailure) {
-      logger.error(projectCodeMap.failed.get.getMessage)
+    if (entityMap.isFailure) {
+      logger.error(entityMap.failed.get.getMessage)
     }
-    projectCodeMap
+    entityMap
   }
 
   /**
@@ -36,8 +36,8 @@ object MapGenerator extends LazyLogging {
    * @param filepath Path to text file in the format code|=|name
    * @return Map of code|name key value pairs
    */
-  private def createProjectCodeMapFromTextFile(filepath: String): Try[Map[String, String]] = {
-    val codeMapTry = Try {
+  private def createEntityMapFromTextFile(filepath: String): Try[Map[String, String]] = {
+    val entityMapTry = Try {
       val source = Source.fromFile(filepath)
       val lines = source.getLines().toList
       source.close()
@@ -48,13 +48,13 @@ object MapGenerator extends LazyLogging {
         .filter(line => line.nonEmpty)
         .map(line => {
           val parts = line.split("=", -2)
-          val code = parts(0)
+          val entity = parts(0)
           val name = parts(1)
-          if (code.isEmpty || name.isEmpty) logger.warn(s"Warning: incomplete row in source file containing $code $name")
-          code -> name
+          if (entity.isEmpty || name.isEmpty) logger.warn(s"Warning: incomplete row in source file containing $entity $name")
+          entity -> name
         }).toMap
     }
-    codeMapTry
+    entityMapTry
   }
 
   /**
@@ -62,7 +62,7 @@ object MapGenerator extends LazyLogging {
    * @param filepath Path to xlsx file where the first two columns are projectCode and projectName
    * @return Map with projectCode|projectName key value pairs
    */
-  private def createProjectCodeMapFromXLSXFile(filepath: String): Try[Map[String, String]] = {
+  private def createEntityMapFromXLSXFile(filepath: String): Try[Map[String, String]] = {
     val workBookFile: File = new File(filepath)
     val fis: FileInputStream = new FileInputStream(workBookFile)
     val wb: Try[Workbook] = Try {
