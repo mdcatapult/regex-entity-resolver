@@ -1,9 +1,16 @@
-# MDC Project & Company Codes Resolver
+# MDC Generic key/value Regex Resolver
 
-Scala tool for identifying MDC project codes and drug research project comapny codes within a text and resolving the codes to a project name via a single POST and a single GET endpoint.
-Reads a source file into memory and generates a map of project code to project names which is then used to resolve codes matching a specific regex format (see below).  The source file can be either:
-* an `.xlsx` file where the first two columns represent `projectCode` and `projectName`.  Data must be in the first tab of the worksheet, and the first row of the spreadsheet is ignored on the basis that these will usually be column headings. 
-* a `.txt` file in the format `projectCode=projectName`. Examples of company codes and the regexes for resolving them are provided in `company_codes_and_regexes.txt` and `company_codes_resolver.txt`.
+A Scala web-service for identifying terms within text and resolving to a value. This was originally designed to find MDC project codes or drug company research codes within text and to resolve them to project or company names. It exposes a single POST and a single GET endpoint
+The web service can be used for 2 different use cases. Both use a regex to identify the term in the provided text but have different methods of resolving those terms to a "thing".
+
+1. Uses a regex to find the term and a key value file to resolve the exact term found. eg "MDCP-0123"="A project"
+2. Uses a regex to find the term and a regex along with a key value file to resolve the term. This is used where only part of the term is used to resolve something. For example, where the terms ABC-123 & ABC-456 both resolve to "ABC"="Something".
+This requires the environment variables `RESOLVER_MATCH_FROM_REGEX` and `RESOLVER_MATCH_REGEX` to be provided.
+
+### How it works
+The web-service reads a source file into memory and generates a map of terms to values which is then used to resolve terms matching a specific regex format (see below).  The source file can be either:
+* an `.xlsx` file where the first two columns represent `term` and `resolved value`.  Data must be in the first tab of the worksheet, and the first row of the spreadsheet is ignored on the basis that these will usually be column headings. 
+* a `.txt` file in the format `key=value`. Examples of company codes and the regexes for resolving them are provided in `company_codes_and_regexes.txt` and the key/value file `company_codes_resolver.txt`.
 
 Examples of both file types can be found in the `src/test/resources` directory.
 
@@ -34,10 +41,11 @@ Although currently configured to identify and resolve MDC project codes, by over
 * `PROJECT_RESOLVER_PORT`: default value is 0.0.0.0
 * `PROJECT_RESOLVER_FILEPATH`: path to `.xlsx` or `.txt` file used to resolve possible matches in a text.  Defaults to the spreadsheet in this repo (`src/main/resources/informatics_projects.xlsx`) 
 * `PROJECT_RESOLVER_REGEX`: regular expression used to identify possible matches in a text. Defaults to `\bMDCP-\d{4}\b`
-* `PROJECT_RESOLVER_ENDPOINT`: determines the url path of the web service.  Defaults to "projects"
+* `PROJECT_RESOLVER_ENDPOINT`: determines the url path of the web service.  Defaults to `projects` ie `http://localhost:8081/projects`
 * `RESOLVER_MATCH_FROM_REGEX`: whether the resolved entity is matched from a regex itself. Boolean and default is `false`.
 * `RESOLVER_MATCH_REGEX`: the regex to determine the resolved entity match (see `RESOLVER_MATCH_FROM_REGEX`)
 
+### Regular Expression Resolving
 If using a regex to match the resolved entity then the file referenced by `PROJECT_RESOLVER_FILEPATH` should match with the `RESOLVER_MATCH_REGEX`.  
 For example, the initial regex (`PROJECT_RESOLVER_REGEX`) to match something could be:
 ```regexp
