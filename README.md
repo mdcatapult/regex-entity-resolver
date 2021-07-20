@@ -43,7 +43,7 @@ Although currently configured to identify and resolve MDC project codes, by over
 * `ENTITY_RESOLVER_REGEX`: regular expression used to identify possible matches in a text. Defaults to `\bMDCP-\d{4}\b`
 * `ENTITY_RESOLVER_ENDPOINT`: determines the url path of the web service.  Defaults to `projects` ie `http://localhost:8081/projects`
 * `ENTITY_RESOLVER_MATCH_FROM_REGEX`: whether the resolved entity is matched from a regex itself. Boolean and default is `false`.
-* `ENTITY_RESOLVER_MATCH_REGEX`: the regex to determine the resolved entity match (see `ENTITY_RESOLVER_MATCH_FROM_REGEX`)
+* `ENTITY_RESOLVER_MATCH_REGEX`: the regex to determine the resolved entity match (see `ENTITY_RESOLVER_MATCH_FROM_REGEX`). Defaults to `[a-zA-Z0-9]+`.
 
 ### Regular Expression Resolving
 If using a regex to match the resolved entity then the file referenced by `ENTITY_RESOLVER_FILEPATH` should match with the `ENTITY_RESOLVER_MATCH_REGEX`.  
