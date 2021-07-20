@@ -1,18 +1,18 @@
 package io.mdcatapult.resolver.webservice
 
-import io.mdcatapult.resolver.webservice.utils.ProjectCodeResolver
+import io.mdcatapult.resolver.webservice.utils.EntityResolver
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 
-class ProjectCodeResolverSpec extends AnyWordSpec with Matchers with TestDependencies {
+class EntityResolverSpec extends AnyWordSpec with Matchers with TestDependencies {
 
   private val exampleCode = "Some text. MDCP-0167. Some other stuff."
   private val exampleMultipleCodes = "Some text. MDCP-0167. Some other stuff. MDCP-0159."
   private val exampleInexistentCode = "Some text. MDCP-9999. Some other stuff."
   private val exampleInvalidCode = "Some text. MDCP-01678. Some other stuff."
 
-  private val resolver = new ProjectCodeResolver(mdcProjectRegex, projectCodeMap)
+  private val resolver = new EntityResolver(mdcProjectRegex, projectCodeMap)(config)
 
   "The projectResolver" should {
     "resolve a single project code" in {

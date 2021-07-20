@@ -6,7 +6,7 @@ val meta = """META.INF/(blueprint|cxf).*""".r
 lazy val root = (project in file("."))
   .settings(
     Defaults.itSettings,
-    name := "mdc-project-resolver",
+    name := "mdc-entity-resolver",
     scalaVersion := "2.13.3",
     scalacOptions ++= Seq(
       "-encoding", "utf-8",
@@ -21,12 +21,12 @@ lazy val root = (project in file("."))
     useCoursier := false,
     updateOptions := updateOptions.value.withLatestSnapshots(latestSnapshots = false),
     resolvers ++= Seq(
-      "MDC Nexus Releases" at "https://nexus.mdcatapult.io/repository/maven-releases/",
-      "MDC Nexus Snapshots" at "https://nexus.mdcatapult.io/repository/maven-snapshots/"),
+      "MDC Nexus Releases" at "https://nexus.wopr.inf.mdc/repository/maven-releases/",
+      "MDC Nexus Snapshots" at "https://nexus.wopr.inf.mdc/repository/maven-snapshots/"),
     credentials += {
       sys.env.get("NEXUS_PASSWORD") match {
         case Some(p) =>
-          Credentials("Sonatype Nexus Repository Manager", "nexus.mdcatapult.io", "gitlab", p)
+          Credentials("Sonatype Nexus Repository Manager", "nexus.wopr.inf.mdc", "gitlab", p)
         case None =>
           Credentials(Path.userHome / ".sbt" / ".credentials")
       }

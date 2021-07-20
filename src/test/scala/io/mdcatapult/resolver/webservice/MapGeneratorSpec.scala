@@ -25,67 +25,67 @@ class MapGeneratorSpec extends AnyWordSpec with Matchers {
 
   "The mapGenerator" should {
     "generate a map when passed a text file" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(exampleTextFilePath)
+      val codeMap = MapGenerator.createEntityMapHandler(exampleTextFilePath)
       assert(codeMap.get.toList.length === totalNumberProjects)
       assert(codeMap.get.toList.contains("MDCP-0199", "Aphrodite"))
     }
 
     "throw an error if passed an empty text file" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(emptyTextFilePath)
+      val codeMap = MapGenerator.createEntityMapHandler(emptyTextFilePath)
       assert(codeMap.isFailure)
     }
 
     "NOT throw an error if passed text file has a row with nothing preceding an equals sign" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(textFileNoKeyInRowPath)
+      val codeMap = MapGenerator.createEntityMapHandler(textFileNoKeyInRowPath)
       assert(codeMap.isSuccess)
     }
 
     "NOT throw an error if passed text file has a row with nothing following an equals sign" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(textFileNoValueInRowPath)
+      val codeMap = MapGenerator.createEntityMapHandler(textFileNoValueInRowPath)
       assert(codeMap.isSuccess)
     }
 
     "omit empty lines in a text file" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(textFileMissingRowPath)
+      val codeMap = MapGenerator.createEntityMapHandler(textFileMissingRowPath)
       assert(codeMap.get.toList.length === totalProjectsInMissingRowFile)
     }
 
     "throw an error if passed text file has a row with no equals sign (delimiter)" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(textFileNoEqualsInRowPath)
+      val codeMap = MapGenerator.createEntityMapHandler(textFileNoEqualsInRowPath)
       assert(codeMap.isFailure)
     }
 
     "generate a map when passed an xlsx file, omitting first row" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(exampleXLSXFilePath)
+      val codeMap = MapGenerator.createEntityMapHandler(exampleXLSXFilePath)
       assert(codeMap.get.toList.length === totalNumberProjects)
       assert(codeMap.get.toList.contains("MDCP-0199", "Aphrodite"))
     }
 
     "NOT error if passed xlsx file contains a row with an empty first column" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(xLSXNoFirstColumnFilePath)
+      val codeMap = MapGenerator.createEntityMapHandler(xLSXNoFirstColumnFilePath)
       assert(codeMap.isSuccess)
       assert(codeMap.get.toList.contains("MDCP-0142", "Artemis"))
     }
 
     "NOT error if passed xlsx file contains a row with an empty second column" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(xLSXNoSecondColumnFilePath)
+      val codeMap = MapGenerator.createEntityMapHandler(xLSXNoSecondColumnFilePath)
       assert(codeMap.isSuccess)
       assert(codeMap.get.toList.contains("MDCP-0159", "Charon"))
     }
 
     "throw an error if passed an empty xlsx file" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(emptyXLSXFilePath)
+      val codeMap = MapGenerator.createEntityMapHandler(emptyXLSXFilePath)
       assert(codeMap.isFailure)
     }
 
     "omit empty rows in an xlsx file" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(xlsxFileMissingRowPath)
+      val codeMap = MapGenerator.createEntityMapHandler(xlsxFileMissingRowPath)
       assert(codeMap.get.toList.length === totalProjectsInMissingRowFile)
       assert(codeMap.get.toList.contains("MDCP-0199", "Aphrodite"))
     }
 
     "throw an error if passed file does not have correct extension" in {
-      val codeMap = MapGenerator.createProjectCodeMapHandler(exampleOtherFilePath)
+      val codeMap = MapGenerator.createEntityMapHandler(exampleOtherFilePath)
       assert(codeMap.isFailure)
     }
 

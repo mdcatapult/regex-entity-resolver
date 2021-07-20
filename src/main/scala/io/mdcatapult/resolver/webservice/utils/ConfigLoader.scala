@@ -23,6 +23,8 @@ final case class AppConfig(
                             port: Int,
                             sourceFilePath: String,
                             regex: String,
-                            urlPath: String
+                            urlPath: String,
+                            resolverMatchFromRegex: Boolean,
+                            resolverMatchRegex: String
                           )
 final case class WebServiceConfig(appConfig: AppConfig)
