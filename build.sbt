@@ -6,7 +6,7 @@ val meta = """META.INF/(blueprint|cxf).*""".r
 lazy val root = (project in file("."))
   .settings(
     Defaults.itSettings,
-    name := "mdc-entity-resolver",
+    name := "regex-entity-resolver",
     scalaVersion := "2.13.3",
     scalacOptions ++= Seq(
       "-encoding", "utf-8",
