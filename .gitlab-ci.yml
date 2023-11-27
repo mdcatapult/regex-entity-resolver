@@ -14,12 +14,10 @@ cache:
     - "sbt-cache/target"
 
 default:
-  image: registry.mdcatapult.io/informatics/docker-images/ci/scala
+  image: registry.gitlab.com/medicines-discovery-catapult/informatics/docker-images/ci/sbt:latest
 
 test:
   stage: test
-  tags:
-    - wopr
   script:
     - sbt clean coverage test coverageReport
   artifacts:
@@ -32,8 +30,6 @@ test:
 
 assemble:
   stage: build
-  tags:
-    - wopr
   script:
     - sbt assembly
   artifacts:
@@ -57,26 +53,22 @@ publish:
     - /kaniko/executor --context $CI_PROJECT_DIR --build-arg VERSION_HASH=$CI_COMMIT_SHORT_SHA --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   except:
     refs:
-      - master
+      - main
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
 
 release:
   stage: release
-  tags:
-    - wopr
   script:
-    - /scripts/release.sh -b -r develop
+    - cictl exec release sbt
   only:
-    - master
+    - main
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
 
-assemble-master:
+assemble-in:
   stage: build
-  tags:
-    - wopr
   script:
     - sbt assembly
     - /scripts/upload-files.sh 'target/scala-2.13/webservice.jar' $CI_COMMIT_REF_NAME
@@ -89,10 +81,8 @@ assemble-master:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
 
-publish-master:
+publish-main:
   stage: publish
-  tags:
-    - wopr
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
