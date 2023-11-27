@@ -22,7 +22,7 @@ lazy val root = (project in file("."))
     updateOptions := updateOptions.value.withLatestSnapshots(latestSnapshots = false),
     resolvers ++= Seq(
       "gitlab" at "https://gitlab.com/api/v4/projects/50550924/packages/maven",
-      "Maven Public" at "https://repo1.mavem.org/maven2"),
+      "Maven Public" at "https://repo1.maven.org/maven2"),
     credentials += {
       sys.env.get("CI_JOB_TOKEN") match {
         case Some(p) =>
