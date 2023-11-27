@@ -14,7 +14,7 @@ cache:
     - "sbt-cache/target"
 
 default:
-  image: registry.gitlab.com/medicines-discovery-catapult/informatics/docker-images/ci/scala
+  image: registry.gitlab.com/medicines-discovery-catapult/informatics/docker-images/ci/scala:latest
 
 test:
   stage: test
