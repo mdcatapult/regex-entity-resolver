@@ -60,14 +60,14 @@ publish:
 release:
   stage: release
   script:
-    - /scripts/release.sh -b -r develop
+    - cictl exec release sbt
   only:
     - main
   except:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
 
-assemble-master:
+assemble-in:
   stage: build
   script:
     - sbt assembly
@@ -81,7 +81,7 @@ assemble-master:
     variables:
       - $CI_COMMIT_MESSAGE =~ /^Setting version to.*/
 
-publish-master:
+publish-main:
   stage: publish
   image:
     name: gcr.io/kaniko-project/executor:debug
