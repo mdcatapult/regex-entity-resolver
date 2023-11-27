@@ -51,7 +51,7 @@ lazy val root = (project in file("."))
         "io.spray" %% "spray-json" % "1.3.5",
         "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
         "com.typesafe" % "config" % configVersion,
-        "io.mdcatapult.klein" %% "util" % "1.2.6",
+        "io.mdcatapult.klein" %% "util" % "1.2.7",
         "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion,
         "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion,
         "com.github.pureconfig" %% "pureconfig" % "0.14.0"
