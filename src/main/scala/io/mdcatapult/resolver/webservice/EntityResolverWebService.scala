@@ -13,8 +13,8 @@
 
 package io.mdcatapult.resolver.webservice
 
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.http.scaladsl.Http
 import com.typesafe.scalalogging.LazyLogging
 import io.mdcatapult.resolver.webservice.routes.Routes
 import io.mdcatapult.resolver.webservice.utils.{ConfigLoader, MapGenerator, EntityResolver}

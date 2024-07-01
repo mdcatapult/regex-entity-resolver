@@ -32,29 +32,28 @@ lazy val root = (project in file("."))
       }
     },
     libraryDependencies ++= {
-      val configVersion = "1.4.0"
-      val akkaVersion = "2.6.4"
-      val akkaHttpVersion = "10.2.0"
+      val configVersion = "1.4.3"
+      val pekkoVersion = "1.0.3"
+      val pekkoHttpVersion = "1.0.1"
 
       Seq(
-        "com.github.pathikrit" %% "better-files" % "3.9.1",
-        "org.scalactic" %% "scalactic" % "3.2.0",
-        "org.scalatest" %% "scalatest" % "3.1.1" % "test",
-        "org.apache.poi" % "poi" % "5.0.0",
-        "org.apache.poi" % "poi-ooxml" % "5.0.0",
-        "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-        "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
-        "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
-        "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
-        "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-        "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
-        "io.spray" %% "spray-json" % "1.3.5",
-        "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+        "com.github.pathikrit" %% "better-files" % "3.9.2",
+        "org.scalactic" %% "scalactic" % "3.2.19",
+        "org.scalatest" %% "scalatest" % "3.2.19" % "test",
+        "org.apache.poi" % "poi" % "5.2.5",
+        "org.apache.poi" % "poi-ooxml" % "5.2.5",
+        "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
+        "org.apache.pekko" %% "pekko-http" % pekkoHttpVersion,
+        "org.apache.pekko" %% "pekko-actor-typed" % pekkoVersion,
+        "org.apache.pekko" %% "pekko-actor-testkit-typed" % pekkoVersion % Test,
+        "org.apache.pekko" %% "pekko-http-spray-json" % pekkoHttpVersion,
+        "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
+        "io.spray" %% "spray-json" % "1.3.6",
         "com.typesafe" % "config" % configVersion,
         "io.mdcatapult.klein" %% "util" % "1.2.6",
-        "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion,
-        "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion,
-        "com.github.pureconfig" %% "pureconfig" % "0.14.0"
+        "org.apache.pekko" %% "pekko-stream-testkit" % pekkoVersion,
+        "org.apache.pekko" %% "pekko-http-testkit" % pekkoHttpVersion,
+        "com.github.pureconfig" %% "pureconfig" % "0.17.7"
       ).map(
         _.exclude(org = "javax.ws.rs", name = "javax.ws.rs-api")
           .exclude(org = "com.google.protobuf", name = "protobuf-java")

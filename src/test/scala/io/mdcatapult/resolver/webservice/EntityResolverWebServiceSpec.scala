@@ -13,9 +13,9 @@
 
 package io.mdcatapult.resolver.webservice
 
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import akka.http.scaladsl.testkit.ScalatestRouteTest
-import akka.util.ByteString
+import org.apache.pekko.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import org.apache.pekko.http.scaladsl.testkit.ScalatestRouteTest
+import org.apache.pekko.util.ByteString
 import io.mdcatapult.resolver.webservice.model.Result
 import io.mdcatapult.resolver.webservice.routes.Routes
 import io.mdcatapult.resolver.webservice.utils.EntityResolver

@@ -13,11 +13,11 @@
 
 package io.mdcatapult.resolver.webservice.routes
 
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
-import akka.http.scaladsl.unmarshalling.Unmarshal
-import akka.stream.Materializer
+import org.apache.pekko.http.scaladsl.model._
+import org.apache.pekko.http.scaladsl.server.Directives._
+import org.apache.pekko.http.scaladsl.server.Route
+import org.apache.pekko.http.scaladsl.unmarshalling.Unmarshal
+import org.apache.pekko.stream.Materializer
 import com.typesafe.scalalogging.LazyLogging
 import io.mdcatapult.resolver.webservice.utils.EntityResolver
 import spray.json._
