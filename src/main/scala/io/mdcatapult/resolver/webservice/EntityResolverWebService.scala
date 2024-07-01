@@ -20,6 +20,7 @@ import io.mdcatapult.resolver.webservice.routes.Routes
 import io.mdcatapult.resolver.webservice.utils.{ConfigLoader, MapGenerator, EntityResolver}
 
 import scala.concurrent.ExecutionContextExecutor
+import scala.io.StdIn
 import scala.util.{Failure, Success, Try}
 import scala.util.matching.Regex
 
@@ -42,8 +43,12 @@ object EntityResolverWebService extends LazyLogging {
         val topLevelRoute = new Routes(resolver, config.urlPath).topLevelRoute
         val host = config.host
         val port = config.port
-        Http().newServerAt(host, port).bind(topLevelRoute)
+        val bindingFuture = Http().newServerAt(host, port).bind(topLevelRoute)
         logger.info(s"Server listening at: $host:$port")
+        StdIn.readLine() // let it run until user presses return
+        bindingFuture
+          .flatMap(_.unbind()) // trigger unbinding from the port
+          .onComplete(_ => system.terminate())
     }
   }
 }
