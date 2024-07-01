@@ -42,6 +42,7 @@ lazy val root = (project in file("."))
         "org.scalatest" %% "scalatest" % "3.2.19" % "test",
         "org.apache.poi" % "poi" % "5.2.5",
         "org.apache.poi" % "poi-ooxml" % "5.2.5",
+        "org.apache.logging.log4j" % "log4j-core" % "2.23.1",
         "org.apache.pekko" %% "pekko-slf4j" % pekkoVersion,
         "org.apache.pekko" %% "pekko-http" % pekkoHttpVersion,
         "org.apache.pekko" %% "pekko-actor-typed" % pekkoVersion,
